@@ -147,7 +147,7 @@
             this.soldierDead.Image = ((System.Drawing.Image)(resources.GetObject("soldierDead.Image")));
             this.soldierDead.Location = new System.Drawing.Point(164, 157);
             this.soldierDead.Name = "soldierDead";
-            this.soldierDead.Size = new System.Drawing.Size(46, 31);
+            this.soldierDead.Size = new System.Drawing.Size(48, 31);
             this.soldierDead.TabIndex = 7;
             this.soldierDead.TabStop = false;
             this.soldierDead.Visible = false;

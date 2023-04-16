@@ -13,14 +13,21 @@ namespace JosephusOOGui
         readonly int PIC_WITH = 25;
         readonly int PIC_HIGT = 60;
 
+        private Boolean[] DeadSoldiers;
+        private int Countdown;
+        private int LastAcessed = 0;
+
+
         private List<PictureBox> SoldierPics;
-     
+
+
         public Form1()
         {
             InitializeComponent();
             CreateSoldiers();
-
         }
+
+
 
         private void CreateSoldiers()
         {
@@ -30,11 +37,13 @@ namespace JosephusOOGui
             for (int s = 0; s < numberOFsoldiers; s++)
             {
                 PictureBox Soldier = PostSoldier(s, numberOFsoldiers);
-                Soldier.Visible= true;
+                Soldier.Visible = true;
                 SoldierPics.Add(Soldier);
                 Areana.Controls.Add(Soldier);
             }
         }
+
+
 
         private PictureBox PostSoldier(int whichSoldier, int numberOFsoldiers)
         {
@@ -46,6 +55,7 @@ namespace JosephusOOGui
             return tempSoldier;
         }
 
+
         private Point CreateLocation(int which, int Nsoldiers)
         {
             double angleDeg = which * 360.0 / Nsoldiers;
@@ -56,46 +66,83 @@ namespace JosephusOOGui
             return Location;
         }
 
+
+
         private void goCountdown()
         {
-            int countdown = (int)numCountdown.Value;
+            Countdown = (int)numCountdown.Value;
 
             int deadSoldiers = 0;
-            int counter = 0;
 
-            while (deadSoldiers < (countdown - 1))
+            DeadSoldiers = new Boolean[SoldierPics.Count];
+            for (int i = 0; i < DeadSoldiers.Length; i++)
             {
-                foreach (PictureBox Soldier in SoldierPics)
+                DeadSoldiers[i] = false;
+            }
+            LastAcessed = DeadSoldiers.Length - 1;
+
+            while (deadSoldiers < (DeadSoldiers.Length - 1))
+            {
+                for(int i =0; i < Countdown; ++i)
                 {
-                    while(counter <= countdown)
+                    if (!DeadSoldiers[LastAcessed])
                     {
-                        CheckAndSetSoldier(Soldier, counter, countdown);
-                        counter++;
+                        for (int s = 0; s < DeadSoldiers.Length; s++)
+                        {
+                            Areana.Controls.Clear();
+                            SoldierPics.Clear();
+                            PictureBox Soldier = AdjustSoldier(s,DeadSoldiers.Length);
+                            Soldier.Visible = true;
+                            SoldierPics.Add(Soldier);
+                            Areana.Controls.Add(Soldier);
+                        }
                     }
+                    else
+                    {
+                        LastAcessed++;
+                        if(LastAcessed == DeadSoldiers.Length)
+                        {
+                            LastAcessed= 0;
+                        }
+                        i--;
+                    }
+                    System.Threading.Thread.Sleep(700);
                 }
+                deadSoldiers++;
             }
         }
 
-        private void CheckAndSetSoldier(PictureBox Soldier, int counter, int countdown)
+
+
+        private PictureBox AdjustSoldier(int whichSoldier, int numberOFsoldiers)
         {
-            if(Soldier.Image.Equals(soldierImage.Image))
-            { 
-                if(counter == countdown)
-                {
-                    Soldier.Height = soldierDead.Height;
-                    Soldier.Width = soldierDead.Width;
-                    Soldier.Image = soldierDead.Image;
-                }
-                else
-                {
-                    Soldier.Image = soldierSword.Image;
-                }                
-                //System.Threading.Thread.Sleep(10);
-            }else
+            PictureBox tempSoldier = new PictureBox();
+
+            if (whichSoldier == LastAcessed && !DeadSoldiers[LastAcessed])
             {
-                //do nothing
+                tempSoldier.Height = PIC_HIGT;
+                tempSoldier.Width = PIC_WITH;
+                tempSoldier.Image = soldierSword.Image;
+                tempSoldier.Location = CreateLocation(whichSoldier, numberOFsoldiers);
             }
+            else if (!DeadSoldiers[LastAcessed])
+            {
+                tempSoldier.Height = PIC_HIGT;
+                tempSoldier.Width = PIC_WITH;
+                tempSoldier.Image = soldierImage.Image;
+                tempSoldier.Location = CreateLocation(whichSoldier, numberOFsoldiers);
+            }
+            else if (DeadSoldiers[LastAcessed])
+            {
+                tempSoldier.Height = 36;
+                tempSoldier.Width = 41;
+                tempSoldier.Image = soldierDead.Image;
+                tempSoldier.Location = CreateLocation(whichSoldier, numberOFsoldiers);
+            }
+
+            return tempSoldier;
         }
+
 
         private void startKilling_Click(object sender, EventArgs e)
         {
