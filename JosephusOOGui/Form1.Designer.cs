@@ -120,7 +120,6 @@
             this.soldierImage.TabStop = false;
             this.soldierImage.Visible = false;
             this.soldierImage.WaitOnLoad = true;
-            this.soldierImage.Click += new System.EventHandler(this.soldierImage_Click);
             // 
             // startKilling
             // 
@@ -182,6 +181,7 @@
             this.Controls.Add(this.label1);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numSoldiers)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numCountdown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.soldierImage)).EndInit();

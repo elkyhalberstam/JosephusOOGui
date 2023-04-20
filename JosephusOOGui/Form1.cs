@@ -72,75 +72,63 @@ namespace JosephusOOGui
         {
             Countdown = (int)numCountdown.Value;
 
-            int deadSoldiers = 0;
+            int numDeadSoldiers = 0;
 
             DeadSoldiers = new Boolean[SoldierPics.Count];
             for (int i = 0; i < DeadSoldiers.Length; i++)
             {
                 DeadSoldiers[i] = false;
             }
-            LastAcessed = DeadSoldiers.Length - 1;
+            LastAcessed = 0;
+            int numberOFsoldiers = (int)numSoldiers.Value;
 
-            while (deadSoldiers < (DeadSoldiers.Length - 1))
+            while (numDeadSoldiers < numberOFsoldiers - 1 )
             {
-                for(int i =0; i < Countdown; ++i)
+                
+                int count = 0;
+                while(count < Countdown)
                 {
                     if (!DeadSoldiers[LastAcessed])
                     {
-                        for (int s = 0; s < DeadSoldiers.Length; s++)
+                        SoldierPics[LastAcessed].Image = soldierSword.Image;
+                        SoldierPics[LastAcessed].Refresh();
+                        System.Threading.Thread.Sleep(1000);
+                        SoldierPics[LastAcessed].Image = soldierImage.Image;
+                        SoldierPics[LastAcessed].Refresh();
+                        LastAcessed++;
+                        if (LastAcessed == DeadSoldiers.Length)
                         {
-                            Areana.Controls.Clear();
-                            SoldierPics.Clear();
-                            PictureBox Soldier = AdjustSoldier(s,DeadSoldiers.Length);
-                            Soldier.Visible = true;
-                            SoldierPics.Add(Soldier);
-                            Areana.Controls.Add(Soldier);
+                            LastAcessed = 0;
                         }
+                        count++;
                     }
                     else
                     {
-                        LastAcessed++;
-                        if(LastAcessed == DeadSoldiers.Length)
+                        while(DeadSoldiers[LastAcessed])
                         {
-                            LastAcessed= 0;
+                            LastAcessed++;
+                            LastAcessed %= numberOFsoldiers;
                         }
-                        i--;
                     }
-                    System.Threading.Thread.Sleep(700);
                 }
-                deadSoldiers++;
+                count = 0;
+
+                while(DeadSoldiers[LastAcessed])
+                        {
+                    LastAcessed++;
+                    LastAcessed %= numberOFsoldiers;
+                }
+
+                SoldierPics[LastAcessed].Width = soldierDead.Width;
+                SoldierPics[LastAcessed].Height = soldierDead.Height;
+                SoldierPics[LastAcessed].Image = soldierDead.Image;
+                SoldierPics[LastAcessed].Refresh();
+                System.Threading.Thread.Sleep(1000);
+                numDeadSoldiers++;
+                DeadSoldiers[LastAcessed] = true;
+                LastAcessed++;
+                LastAcessed %= numberOFsoldiers;
             }
-        }
-
-
-
-        private PictureBox AdjustSoldier(int whichSoldier, int numberOFsoldiers)
-        {
-            PictureBox tempSoldier = new PictureBox();
-
-            if (whichSoldier == LastAcessed && !DeadSoldiers[LastAcessed])
-            {
-                tempSoldier.Height = PIC_HIGT;
-                tempSoldier.Width = PIC_WITH;
-                tempSoldier.Image = soldierSword.Image;
-                tempSoldier.Location = CreateLocation(whichSoldier, numberOFsoldiers);
-            }
-            else if (!DeadSoldiers[LastAcessed])
-            {
-                tempSoldier.Height = PIC_HIGT;
-                tempSoldier.Width = PIC_WITH;
-                tempSoldier.Image = soldierImage.Image;
-                tempSoldier.Location = CreateLocation(whichSoldier, numberOFsoldiers);
-            }
-            else if (DeadSoldiers[LastAcessed])
-            {
-                tempSoldier.Height = 36;
-                tempSoldier.Width = 41;
-                tempSoldier.Image = soldierDead.Image;
-                tempSoldier.Location = CreateLocation(whichSoldier, numberOFsoldiers);
-            }
-
-            return tempSoldier;
         }
 
 
@@ -158,12 +146,12 @@ namespace JosephusOOGui
             //
         }
 
-        private void soldierImage_Click(object sender, EventArgs e)
+        private void pictureBox2_Click(object sender, EventArgs e)
         {
             //
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
             //
         }
